@@ -29,7 +29,7 @@
 
 # Define the path from where you want to search for flac files/folders
 # Trailing slash required
-source="/tmp/FLAC/"
+source="/media/Audio/"
 
 # Define the path from where you want save the optimized flacs and files to
 # Trailing slash required
@@ -55,12 +55,12 @@ replaygain="1"
 seekpoint="0.5"
 
 # Remove embedded pictures? Set 1 for removing
-removepic="1"
+removepic="0"
 
 # Remove existing tags. Set the value to 0 to empty/remove the according tag. All other tags will be added to the new file
 # Do not alter this in any way but setting values of 0 and 1.
 tag_arr[1]="1"    #TITLE
-tag_arr[2]="0"    #ARTIST
+tag_arr[2]="1"    #ARTIST
 tag_arr[3]="1"    #ALBUM
 tag_arr[4]="1"    #DISCNUMBER
 tag_arr[5]="1"    #DATE
