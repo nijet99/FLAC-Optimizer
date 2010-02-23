@@ -68,18 +68,18 @@ tag_arr[6]="1"    #TRACKNUMBER
 tag_arr[7]="1"    #TRACKTOTAL
 tag_arr[8]="1"    #GENRE
 tag_arr[9]="1"    #DESCRIPTIONS
-tag_arr[10]="1"    #COMMENT
-tag_arr[11]="1"    #COMPOSER
-tag_arr[12]="1"    #PERFORMER
-tag_arr[13]="1"    #COPYRIGHT
-tag_arr[14]="1"    #LICENCE
-tag_arr[15]="1"    #ENCODEDBY
+tag_arr[10]="1"   #COMMENT
+tag_arr[11]="1"   #COMPOSER
+tag_arr[12]="1"   #PERFORMER
+tag_arr[13]="1"   #COPYRIGHT
+tag_arr[14]="1"   #LICENCE
+tag_arr[15]="1"   #ENCODEDBY
 #### The replay gain tags will be auto-overwritten if the replay gain option is enabled. Use the following tags only to delete the tags
-tag_arr[16]="1"    #REPLAYGAIN REFERENCE LOUDNESS
-tag_arr[17]="1"    #REPLAYGAIN TRACK GAIN
-tag_arr[18]="1"    #REPLAYGAIN_TRACK_PEAK
-tag_arr[19]="1"    #REPLAYGAIN_ALBUM_GAIN
-tag_arr[20]="1"    #REPLAYGAIN_ALBUM_PEAK
+tag_arr[16]="1"   #REPLAYGAIN REFERENCE LOUDNESS
+tag_arr[17]="1"   #REPLAYGAIN TRACK GAIN
+tag_arr[18]="1"   #REPLAYGAIN_TRACK_PEAK
+tag_arr[19]="1"   #REPLAYGAIN_ALBUM_GAIN
+tag_arr[20]="1"   #REPLAYGAIN_ALBUM_PEAK
 
 
 
