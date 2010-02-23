@@ -1,0 +1,26 @@
+FLAC-Convert                             Originally created by nijet99@gmail.com
+--------------------------------------------------------------------------------
+ 
+FLAC-Optimizer is a simple bash script that optimizes flac files.
+
+
+Features:
+ - Set compression level
+ - Set tags to be removes
+ - Chose whether to remove embedded art
+ - Chose what other file types should be "saved" like cue and log files
+ 
+ 
+Usage:
+ - Customize your settings at the top of the script
+ - Run the script
+ - Advice: Run it first on a test collection and set a test destination and verify
+           if everything is to your liking
+
+ 
+Requirements:
+ - flac
+ 
+ 
+Known issues:
+ - None
