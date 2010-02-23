@@ -22,7 +22,7 @@
 
 
 #################################################################################
-#							  DEFINE VARIABLES								 #
+#                              DEFINE VARIABLES                                 #
 #################################################################################
 
 
@@ -59,33 +59,33 @@ removepic="1"
 
 # Remove existing tags. Set the value to 0 to empty/remove the according tag. All other tags will be added to the new file
 # Do not alter this in any way but setting values of 0 and 1.
-tag_arr[1]="1"	#TITLE
-tag_arr[2]="0"	#ARTIST
-tag_arr[3]="1"	#ALBUM
-tag_arr[4]="1"	#DISCNUMBER
-tag_arr[5]="1"	#DATE
-tag_arr[6]="1"	#TRACKNUMBER
-tag_arr[7]="1"	#TRACKTOTAL
-tag_arr[8]="1"	#GENRE
-tag_arr[9]="1"	#DESCRIPTIONS
-tag_arr[10]="1"	#COMMENT
-tag_arr[11]="1"	#COMPOSER
-tag_arr[12]="1"	#PERFORMER
-tag_arr[13]="1"	#COPYRIGHT
-tag_arr[14]="1"	#LICENCE
-tag_arr[15]="1"	#ENCODEDBY
+tag_arr[1]="1"    #TITLE
+tag_arr[2]="0"    #ARTIST
+tag_arr[3]="1"    #ALBUM
+tag_arr[4]="1"    #DISCNUMBER
+tag_arr[5]="1"    #DATE
+tag_arr[6]="1"    #TRACKNUMBER
+tag_arr[7]="1"    #TRACKTOTAL
+tag_arr[8]="1"    #GENRE
+tag_arr[9]="1"    #DESCRIPTIONS
+tag_arr[10]="1"    #COMMENT
+tag_arr[11]="1"    #COMPOSER
+tag_arr[12]="1"    #PERFORMER
+tag_arr[13]="1"    #COPYRIGHT
+tag_arr[14]="1"    #LICENCE
+tag_arr[15]="1"    #ENCODEDBY
 #### The replay gain tags will be auto-overwritten if the replay gain option is enabled. Use the following tags only to delete the tags
-tag_arr[16]="1"	#REPLAYGAIN REFERENCE LOUDNESS
-tag_arr[17]="1"	#REPLAYGAIN TRACK GAIN
-tag_arr[18]="1"	#REPLAYGAIN_TRACK_PEAK
-tag_arr[19]="1"	#REPLAYGAIN_ALBUM_GAIN
-tag_arr[20]="1"	#REPLAYGAIN_ALBUM_PEAK
+tag_arr[16]="1"    #REPLAYGAIN REFERENCE LOUDNESS
+tag_arr[17]="1"    #REPLAYGAIN TRACK GAIN
+tag_arr[18]="1"    #REPLAYGAIN_TRACK_PEAK
+tag_arr[19]="1"    #REPLAYGAIN_ALBUM_GAIN
+tag_arr[20]="1"    #REPLAYGAIN_ALBUM_PEAK
 
 
 
 #################################################################################
-#							 DEFINE USER FUNCTIONS							 #
-#							   do not edit below							   #
+#                             DEFINE USER FUNCTIONS                             #
+#                               do not edit below                               #
 #################################################################################
 
 
@@ -121,92 +121,92 @@ maxnum=$(($maxnum+1))
 # enable ctrl-c abort
 control_c()
 {
-	for f in `jobs -p`; do
-		kill $f 2> /dev/null
-	done
-	wait
-	exit $?
+    for f in `jobs -p`; do
+        kill $f 2> /dev/null
+    done
+    wait
+    exit $?
 }
 trap control_c SIGINT
 
 function check_exit_codes
 {
-	local ps=${PIPESTATUS[*]}
-	local args=( `echo $@` )
-	local i=0
-	for s in $ps
-	do
-		if [ $s -ne 0 ]
-		then
-			echo "WARNING: Return code of ${args[$i]} indicates failure"
-			break
-		fi
-		let i=$i+1
-	done
+    local ps=${PIPESTATUS[*]}
+    local args=( `echo $@` )
+    local i=0
+    for s in $ps
+    do
+        if [ $s -ne 0 ]
+        then
+            echo "WARNING: Return code of ${args[$i]} indicates failure"
+            break
+        fi
+        let i=$i+1
+    done
 }
 
 
 function optimize_flacs
 {
-	# getting the parameters
-	flacfile="$1"
-	source="$2"
-	destination="$3"
-	compression="$4"
-	replaygain="$5"
-	seekpoint="$6"
-	removepic="$7"
-	tag_arr="$8"
-	tag_val="$9"
+    # getting the parameters
+    flacfile="$1"
+    source="$2"
+    destination="$3"
+    compression="$4"
+    replaygain="$5"
+    seekpoint="$6"
+    removepic="$7"
+    tag_arr="$8"
+    tag_val="$9"
 
 
-	# build the options list for conversion
-	co_opt="-$compression"
-	
-	if [ "$replaygain" = "1" ]
-	then
-		rg_opt="--replay-gain"
-	fi
-	
-	if [ "$seekpoint" = "0" ]
-	then
-		sp_opt="--no-seektable"
-	else
-		s="s"
-		sp_opt="-S $seekpoint$s"
-	fi
+    # build the options list for conversion
+    co_opt="-$compression"
+    
+    if [ "$replaygain" = "1" ]
+    then
+        rg_opt="--replay-gain"
+    fi
+    
+    if [ "$seekpoint" = "0" ]
+    then
+        sp_opt="--no-seektable"
+    else
+        s="s"
+        sp_opt="-S $seekpoint$s"
+    fi
 
-	options="$co_opt $rg_opt $sp_opt"
+    options="$co_opt $rg_opt $sp_opt"
 
-	nice flac $options -o "$destination$flacfile" "$source$flacfile"
+    nice flac $options -o "$destination$flacfile" "$source$flacfile"
 
-	# run metaflac to remove pics and unwanted tags
-	if [ "$removepic" = "1" ]
-	then
-		rp_opt="--remove --block-type=PICTURE --dont-use-padding"
-	fi
+    # run metaflac to remove pics and unwanted tags
+    if [ "$removepic" = "1" ]
+    then
+        rp_opt="--remove --block-type=PICTURE --dont-use-padding"
+    fi
 
-	for (( i = 1 ; i < ${#tag_arr[@]} ; i++ ))
-	do
-		check="${tag_arr[$i]}"
-		if [ "$check" = "0" ]
-		then
-			f="${tag_val[$i]}"
-			tag_opt="$tag_opt --remove-field=$f"
-		fi
-	done
+    for (( i = 1 ; i < ${#tag_arr[@]} ; i++ ))
+    do
+        check="${tag_arr[$i]}"
+        if [ "$check" = "0" ]
+        then
+            f="${tag_val[$i]}"
+            tag_opt="$tag_opt --remove-field=$f"
+        fi
+    done
 
-	options="1--- $rp_opt $tag_opt"
+    options="1--- $rp_opt $tag_opt"
 
-	nice metaflac $rp_opt "$destination$flacfile"
+    nice metaflac $rp_opt "$destination$flacfile"
 
 }
 
 
 
 #################################################################################
-#								 SCRIPT CONTROL								#
-#							   do not edit below							   #
+#                                 SCRIPT CONTROL                                #
+#                               do not edit below                               #
 #################################################################################
 
 
@@ -218,47 +218,47 @@ echo "Starting the flacconvert script..."
 if [ -d "$source" ]
 then
 
-	# go to the source directory
-	cd "$source"
+    # go to the source directory
+    cd "$source"
 
 
-	# create folder structure
-	nice find -type d | grep -v '^\.$' | while read folder
-	do
-		# change destination path
-		mkdir -p "$destination$folder"
-	done
+    # create folder structure
+    nice find -type d | grep -v '^\.$' | while read folder
+    do
+        # change destination path
+        mkdir -p "$destination$folder"
+    done
 
 
-	# copy desired non-flac files
-	for ext in ${file_arr[@]}
-	do
-		# sleep while max number of jobs are running
-		until ((`jobs | wc -l` < maxnum)); do
-			sleep 1
-		done
-		echo "... copying $ext files..."
-		nice find . -iname "*.$ext" | while read extfile
-		do
-			cp -a -u "$extfile" "$destination$extfile"
-		done
-	done
+    # copy desired non-flac files
+    for ext in ${file_arr[@]}
+    do
+        # sleep while max number of jobs are running
+        until ((`jobs | wc -l` < maxnum)); do
+            sleep 1
+        done
+        echo "... copying $ext files..."
+        nice find . -iname "*.$ext" | while read extfile
+        do
+            cp -a -u "$extfile" "$destination$extfile"
+        done
+    done
 
 
-	# find all flac files and pass them on to the actual convert script
-	nice find . -iname '*.flac' | while read flacfile
-	do
-		# sleep while max number of jobs are running
-		until ((`jobs | wc -l` < maxnum)); do
-			sleep 1
-		done
-		
-		# run optimize_flacs function
-		optimize_flacs "$flacfile" "$source" "$destination" "$compression" "$replaygain" "$seekpoint" "$removepic" "$tag_arr" "$tag_val"
-	done
+    # find all flac files and pass them on to the actual convert script
+    nice find . -iname '*.flac' | while read flacfile
+    do
+        # sleep while max number of jobs are running
+        until ((`jobs | wc -l` < maxnum)); do
+            sleep 1
+        done
+    
+        # run optimize_flacs function
+        optimize_flacs "$flacfile" "$source" "$destination" "$compression" "$replaygain" "$seekpoint" "$removepic" "$tag_arr" "$tag_val"
+    done
 
 
-	echo "... optimization of flac files finished."
+    echo "... optimization of flac files finished."
 fi
 
 echo "Done!"
