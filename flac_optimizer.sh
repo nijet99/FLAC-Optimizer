@@ -192,11 +192,11 @@ function optimize_flacs
         if [ "$check" = "0" ]
         then
             f="${tag_val[$i]}"
-            tag_opt="$tag_opt --remove-field=$f"
+            tag_opt="$tag_opt --remove-tag=$f"
         fi
     done
 
-    options="1--- $rp_opt $tag_opt"
+    options="$rp_opt $tag_opt"
 
     nice metaflac $rp_opt "$destination$flacfile"
 
@@ -257,7 +257,9 @@ then
         optimize_flacs "$flacfile" "$source" "$destination" "$compression" "$replaygain" "$seekpoint" "$removepic" "$tag_arr" "$tag_val"
     done
 
-
+	echo ""
+	echo ""
+	echo ""
     echo "... optimization of flac files finished."
 fi
 
