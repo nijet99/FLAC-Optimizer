@@ -196,8 +196,7 @@ function optimize_flacs
         fi
     done
 
-    options="$rp_opt $tag_opt"
-
+    nice metaflac $tag_opt "$destination$flacfile"
     nice metaflac $rp_opt "$destination$flacfile"
 
 }
