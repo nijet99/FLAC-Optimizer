@@ -165,7 +165,7 @@ function optimize_flacs
     
     if [ "$replaygain" = "1" ]
     then
-        rg_opt="--replay-gain"
+        rg_opt="--replay-gain -P"
     fi
     
     if [ "$seekpoint" = "0" ]
@@ -178,7 +178,11 @@ function optimize_flacs
 
     options="$co_opt $rg_opt $sp_opt"
 
-    nice flac $options -o "$destination$flacfile" "$source$flacfile"
+    # sleep while max number of jobs are running
+    until ((`jobs | wc -l` < maxnum)); do
+        sleep 1
+    done
+    nice flac $options -o "$destination$flacfile" "$source$flacfile" &
 
     # run metaflac to remove pics and unwanted tags
     if [ "$removepic" = "1" ]
@@ -186,6 +190,9 @@ function optimize_flacs
         rp_opt="--remove --block-type=PICTURE --dont-use-padding"
     fi
 
+	# The tag filtering is not done during inital encoding because quotes can have undesired effects.
+	# By the initial encoding all tags are applied to the new created flac file and then the unwanted
+	# tags get removed
     for (( i = 1 ; i < ${#tag_arr[@]} ; i++ ))
     do
         check="${tag_arr[$i]}"
@@ -232,10 +239,6 @@ then
     # copy desired non-flac files
     for ext in ${file_arr[@]}
     do
-        # sleep while max number of jobs are running
-        until ((`jobs | wc -l` < maxnum)); do
-            sleep 1
-        done
         echo "... copying $ext files..."
         nice find . -iname "*.$ext" | while read extfile
         do
@@ -247,11 +250,6 @@ then
     # find all flac files and pass them on to the actual convert script
     nice find . -iname '*.flac' | while read flacfile
     do
-        # sleep while max number of jobs are running
-        until ((`jobs | wc -l` < maxnum)); do
-            sleep 1
-        done
-    
         # run optimize_flacs function
         optimize_flacs "$flacfile" "$source" "$destination" "$compression" "$replaygain" "$seekpoint" "$removepic" "$tag_arr" "$tag_val"
     done
