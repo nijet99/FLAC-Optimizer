@@ -145,8 +145,7 @@ function check_exit_codes
     done
 }
 
-
-function optimize_flacs
+function reencode_flacs
 {
     # getting the parameters
     flacfile="$1"
@@ -155,19 +154,15 @@ function optimize_flacs
     compression="$4"
     replaygain="$5"
     seekpoint="$6"
-    removepic="$7"
-    tag_arr="$8"
-    tag_val="$9"
-
 
     # build the options list for conversion
     co_opt="-$compression"
-    
+
     if [ "$replaygain" = "1" ]
     then
         rg_opt="--replay-gain -P"
     fi
-    
+
     if [ "$seekpoint" = "0" ]
     then
         sp_opt="--no-seektable"
@@ -183,6 +178,16 @@ function optimize_flacs
         sleep 1
     done
     nice flac $options -o "$destination$flacfile" "$source$flacfile" &
+}
+
+function optimize_flacs
+{
+    # getting the parameters
+    flacfile="$1"
+    destination="$2"
+    removepic="$3"
+    tag_arr="$4"
+    tag_val="$5"
 
     # run metaflac to remove pics and unwanted tags
     if [ "$removepic" = "1" ]
@@ -250,14 +255,30 @@ then
     # find all flac files and pass them on to the actual convert script
     nice find . -iname '*.flac' | while read flacfile
     do
-        # run optimize_flacs function
-        optimize_flacs "$flacfile" "$source" "$destination" "$compression" "$replaygain" "$seekpoint" "$removepic" "$tag_arr" "$tag_val"
+        # run reencode_flacs function
+        reencode_flacs "$flacfile" "$source" "$destination" "$compression" "$replaygain" "$seekpoint"
     done
-
-	echo ""
-	echo ""
-	echo ""
-    echo "... optimization of flac files finished."
 fi
 
-echo "Done!"
+echo ""
+echo ""
+echo ""
+echo "... reencoding finished... starting optimization...."
+
+if [ -d "$destination" ]
+then
+    # go to the destination directory
+    cd "$destination"
+
+    # find all flac files and pass them on to the actual convert script
+    nice find . -iname '*.flac' | while read flacfile
+    do
+        # run optimize_flacs function
+        optimize_flacs "$flacfile" "$destination" "$removepic" "$tag_arr" "$tag_val"
+    done
+fi
+
+echo ""
+echo ""
+echo ""
+echo "... optimization of flac files finished."
