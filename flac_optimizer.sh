@@ -36,7 +36,8 @@ source="/media/Audio/"
 destination="/tmp/test/"
 
 # Define the further files types that you also want to copy
-# All other files that are not flacs and none of the file types below will not get copied over
+# All other files that are not flacs and neither one of the file types below will not get copied over
+# The file extensions are case-insensitive
 file_arr[1]="jpg"
 file_arr[2]="bmp"
 file_arr[3]="gif"
